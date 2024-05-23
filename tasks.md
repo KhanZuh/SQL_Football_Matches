@@ -67,24 +67,19 @@ WHERE awayteam LIKE '%City%';
 6) How many different teams have played in matches recorded in a French division?
 
 ```sql
---  counting the total number of distinct teams (both home and away) 
--- that have played matches recorded in the French divisions 'F1' and 'F2'.
-SELECT 
-    COUNT(DISTINCT matches.hometeam) + COUNT(DISTINCT matches.awayteam)
-FROM 
-    public.matches
-WHERE 
-    (matches.division_code = 'F1' OR matches.division_code = 'F2');
-
--- Gives 122
-
--- Rubber 🦆
--- Using the OR operator to filter matches where the division code is either 'F1' or 'F2'.
--- Then count the distinct home teams and distinct away teams separately from the matches.
--- Sum up these counts to get the total number of distinct teams that have played matches in French divisions 'F1' and 'F2'.
-
+SELECT COUNT(DISTINCT team) 
+FROM (
+    SELECT DISTINCT hometeam AS team
+    FROM matches
+    WHERE division_code = 'F1' OR division_code = 'F2'
+    UNION ALL
+    SELECT DISTINCT awayteam AS team
+    FROM matches
+    WHERE division_code = 'F1' OR division_code = 'F2'
+) AS teams_in_french_division ;
 
 ```
+
 
 7) Have Huddersfield played Swansea in any of the recorded matches?
 
